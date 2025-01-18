@@ -1,0 +1,27 @@
+import pandas as pd
+
+# Define the events and time frame
+event1 = "Play Song or Video"
+event2 = "Purchase Song or Video"
+time_frame = "June 2022"
+
+# Sample data (replace with actual data)
+data = {
+    "User ID": [1, 2, 3, 4, 5],
+    "Event": [event1, event1, event1, event2, event2],
+    "Timestamp": ["2022-06-01", "2022-06-05", "2022-06-10", "2022-06-15", "2022-06-20"]
+}
+
+df = pd.DataFrame(data)
+
+# Calculate the number of users who played the song/video 3 times
+users_played_3_times = df[df["Event"] == event1].groupby("User ID").size().reset_index(name="Count")
+users_played_3_times = users_played_3_times[users_played_3_times["Count"] == 3].shape[0]
+
+# Calculate the number of users who purchased the song/video after playing 3 times
+users_purchased_after_3_times = df[(df["Event"] == event2) & (df["User ID"].isin(users_played_3_times))].shape[0]
+
+# Calculate the percentage
+percentage = (users_purchased_after_3_times / users_played_3_times) * 100
+
+print(f"Percentage of users who played song/video 3 times before purchasing: {percentage}%")
